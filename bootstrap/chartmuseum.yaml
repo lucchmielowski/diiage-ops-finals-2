@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: chartmuseum
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://chartmuseum.github.io/charts
+    targetRevision: '3.9.2'
+    chart: chartmuseum
+    helm:
+      values: |
+        env:
+          open:
+            STORAGE: local
+            DISABLE_API: false
+            ALLOW_OVERWRITE: true
+        persistence:
+          enabled: true
+          accessMode: ReadWriteOnce
+          size: 8Gi
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /$2
+          hosts:
+          - name:
+            path: /chartmuseum(/|$)(.*)
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: chartmuseum
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+    - CreateNamespace=true

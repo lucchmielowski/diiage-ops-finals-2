@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: question2
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://chartmuseum.chartmuseum:8080
+    targetRevision: '*'
+    chart: question2
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: question2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+    - CreateNamespace=true
