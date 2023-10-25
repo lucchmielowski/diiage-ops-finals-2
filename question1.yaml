@@ -1,11 +1,1 @@
 # Create a kind cluster config here ⬇️
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-name: diiage
-nodes:
-  - role: control-plane
-    extraPortMappings:
-      - containerPort: 80
-        hostPort: 8082
-        protocol: TCP
-  - role: worker
